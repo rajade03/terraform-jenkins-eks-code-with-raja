@@ -38,10 +38,12 @@ module "eks" {
   version = "~> 21.0"
 
   name               = "my-eks-cluster"
-  kubernetes_version = "1.33"
+  kubernetes_version = "1.31"
 
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
+
+  enable_cluster_creator_admin_permissions = true
 
   # EKS Managed Node Group(s)
   eks_managed_node_groups = {
@@ -53,6 +55,10 @@ module "eks" {
       min_size     = 1
       max_size     = 3
       desired_size = 2
+
+      iam_role_additional_policies = {
+        AmazonSSMManagedInstanceCore = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+      }
     }
   }
 
